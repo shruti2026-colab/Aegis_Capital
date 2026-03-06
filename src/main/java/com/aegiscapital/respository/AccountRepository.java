@@ -1,4 +1,9 @@
 package com.aegiscapital.respository;
 
-public class AccountRepository {
+import com.aegiscapital.entity.Account;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface AccountRepository extends JpaRepository<Account, Long>
+{
+
 }
