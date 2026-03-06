@@ -1,4 +1,4 @@
-package com.Transaction.AegisCapital;
+package com.aegiscapital;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
