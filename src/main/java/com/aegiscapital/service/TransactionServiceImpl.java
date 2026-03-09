@@ -1,5 +1,6 @@
 package com.aegiscapital.service;
 
+import com.aegiscapital.dto.TransferRequestDTO;
 import com.aegiscapital.entity.Account;
 import com.aegiscapital.entity.Transaction;
 import com.aegiscapital.respository.AccountRepository;
@@ -22,9 +23,9 @@ public class TransactionServiceImpl implements TransactionService
     @Transactional
     public void transferFunds(TransferRequestDTO request)
     {
-        Account sender = accountRepository.findById(request.getFromAccount())
+        Account sender = accountRepository.findById(request.getFromAccountId())
                 .orElseThrow(() -> new RuntimeException("Sender account not found"));
-        Account receiver = accountRepository.findById(request.getToAccount())
+        Account receiver = accountRepository.findById(request.getToAccountId())
                 .orElseThrow(() -> new RuntimeException("Receiver account not found"));
 
         BigDecimal amount = request.getAmount();
