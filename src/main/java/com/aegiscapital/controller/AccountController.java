@@ -21,9 +21,9 @@ public class AccountController {
         return "Deposit successful";
     }
 
-    @PostMapping("/withdraw")
-    public String withdraw(@RequestParam Long accountId,
-                           @RequestParam BigDecimal amount) {
+    @PostMapping("/withdraw/{accountId}/{amount}")
+    public String withdraw(@PathVariable Long accountId,
+                           @PathVariable BigDecimal amount) {
 
         accountService.withdraw(accountId, amount);
         return "Withdraw successful";
