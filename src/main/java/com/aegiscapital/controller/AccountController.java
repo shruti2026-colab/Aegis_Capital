@@ -15,9 +15,9 @@ public class AccountController {
 
     private final AccountService accountService;
 
-    @PostMapping("/deposit")
-    public String deposit(@RequestParam Long accountId,
-                          @RequestParam BigDecimal amount) {
+    @PostMapping("/deposit/{accountId}/{amount}")
+    public String deposit(@PathVariable Long accountId,
+                          @PathVariable BigDecimal amount) {
 
         accountService.deposit(accountId, amount);
         return "Deposit successful";
