@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name ="transactions")
@@ -26,13 +26,13 @@ public class Transaction {
     private String status; // to check whether transaction success or failed
 
     @Column(name = "transaction_time", nullable = false)
-    private Timestamp timestamp;  // to display when the transaction is done
+    private LocalDateTime timestamp;  // to display when the transaction is done
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "from_account_id")
     private Account fromAccount;  // account sending money
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "to_account_id")
     private Account toAccount;  // account receiving money
 

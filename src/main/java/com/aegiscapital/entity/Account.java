@@ -27,7 +27,7 @@ public class Account {
 
 
     // if may be more than one account belong to one user
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
