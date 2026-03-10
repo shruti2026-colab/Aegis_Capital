@@ -1,5 +1,7 @@
 package com.aegiscapital.controller;
 
+import com.aegiscapital.dto.DepositRequestDTO;
+import com.aegiscapital.dto.WithdrawRequestDTO;
 import com.aegiscapital.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -13,19 +15,17 @@ public class AccountController {
 
     private final AccountService accountService;
 
-    @PostMapping("/deposit/{accountId}/{amount}")
-    public String deposit(@PathVariable Long accountId,
-                          @PathVariable BigDecimal amount) {
+    @PostMapping("/deposit")
+    public String deposit(@RequestBody DepositRequestDTO request) {
 
-        accountService.deposit(accountId, amount);
+        accountService.deposit(request.getAccountId(), request.getAmount());
         return "Deposit successful";
     }
 
-    @PostMapping("/withdraw/{accountId}/{amount}")
-    public String withdraw(@PathVariable Long accountId,
-                           @PathVariable BigDecimal amount) {
+    @PostMapping("/withdraw")
+    public String withdraw(@RequestBody WithdrawRequestDTO request) {
 
-        accountService.withdraw(accountId, amount);
+        accountService.withdraw(request.getAccountId(), request.getAmount());
         return "Withdraw successful";
     }
 

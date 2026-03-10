@@ -3,6 +3,8 @@ package com.aegiscapital.service;
 import com.aegiscapital.dto.TransferRequestDTO;
 import com.aegiscapital.entity.Account;
 import com.aegiscapital.entity.Transaction;
+import com.aegiscapital.exception.AccountNotFoundException;
+import com.aegiscapital.exception.InsufficientBalanceException;
 import com.aegiscapital.respository.AccountRepository;
 import com.aegiscapital.respository.TransactionRepository;
 import jakarta.transaction.Transactional;
@@ -23,16 +25,18 @@ public class TransactionServiceImpl implements TransactionService
     @Transactional
     public void transferFunds(TransferRequestDTO request)
     {
+        // throws new custom made exception if account not found for both sender and receiver
         Account sender = accountRepository.findById(request.getFromAccountId())
-                .orElseThrow(() -> new RuntimeException("Sender account not found"));
+                .orElseThrow(() -> new AccountNotFoundException("Sender account not found"));
         Account receiver = accountRepository.findById(request.getToAccountId())
-                .orElseThrow(() -> new RuntimeException("Receiver account not found"));
+                .orElseThrow(() -> new AccountNotFoundException("Receiver account not found"));
 
         BigDecimal amount = request.getAmount();
 
         if(sender.getBalance().compareTo(amount) < 0)
         {
-            throw new RuntimeException("Insufficient balance");
+            // throws new custom made exception if account not found
+            throw new InsufficientBalanceException("Insufficient balance");
         }
 
         sender.setBalance(sender.getBalance().subtract(amount));

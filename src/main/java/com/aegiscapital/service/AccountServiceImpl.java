@@ -1,6 +1,8 @@
 package com.aegiscapital.service;
 
 import com.aegiscapital.entity.Account;
+import com.aegiscapital.exception.AccountNotFoundException;
+import com.aegiscapital.exception.InsufficientBalanceException;
 import com.aegiscapital.respository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,8 +21,9 @@ public class AccountServiceImpl implements AccountService
     @Override
     public void deposit(Long accountId, BigDecimal amount)
     {
+        // throws new custom made exception if account not found
         Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
         account.setBalance(account.getBalance().add(amount));
         accountRepository.save(account);
     }
@@ -29,10 +32,11 @@ public class AccountServiceImpl implements AccountService
     public void withdraw(Long accountId, BigDecimal amount)
     {
         Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
         if(account.getBalance().compareTo(amount) < 0)
         {
-            throw new RuntimeException("Insufficient balance");
+            // throws new custom made exception if there no sufficient balance in account
+            throw new InsufficientBalanceException("Insufficient balance");
         }
 
         account.setBalance(account.getBalance().subtract(amount));
@@ -43,8 +47,9 @@ public class AccountServiceImpl implements AccountService
     @Override
     public BigDecimal getBalance(Long accountId)
     {
+       // throws new custom made exception if account not found
         Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
 
         return account.getBalance();
     }
