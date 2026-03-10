@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -46,13 +47,16 @@ public class TransactionServiceImpl implements TransactionService
         accountRepository.save(sender);
         accountRepository.save(receiver);
 
+        // funds transfer details and time are stored directly
         Transaction transaction = Transaction.builder()
-                .fromAccount(sender)
-                .toAccount(receiver)
+                .fromAccount(sender) // sender accountid is stored
+                .toAccount(receiver) //receiver accountid is stored
                 .amount(amount)
-                .status("SUCCESS")
-                .timestamp(new Timestamp(System.currentTimeMillis()))
+                .status("Funds Transferring SUCCESS")
+                .timestamp(LocalDateTime.now())
                 .build();
+
+        transactionRepository.save(transaction);
     }
 
     public List<Transaction> getTransactions(Long accountId)
