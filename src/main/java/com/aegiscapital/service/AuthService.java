@@ -1,4 +1,10 @@
 package com.aegiscapital.service;
 
-public class AuthService {
+
+import com.aegiscapital.dto.RegisterRequestDTO;
+import com.aegiscapital.dto.LoginRequestDTO;
+
+public interface AuthService {
+    String register(RegisterRequestDTO request);
+    String login(LoginRequestDTO request);
 }
