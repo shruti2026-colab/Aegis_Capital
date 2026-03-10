@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +36,7 @@ public class TransactionServiceImpl implements TransactionService
 
         if(sender.getBalance().compareTo(amount) < 0)
         {
-            // throws new custom made exception if account not found
+            // throws new custom made exception if balance is insufficient
             throw new InsufficientBalanceException("Insufficient balance");
         }
 
@@ -52,5 +53,11 @@ public class TransactionServiceImpl implements TransactionService
                 .status("SUCCESS")
                 .timestamp(new Timestamp(System.currentTimeMillis()))
                 .build();
+    }
+
+    public List<Transaction> getTransactions(Long accountId)
+    {
+        return transactionRepository
+                .findByFromAccountIdOrToAccountId(accountId, accountId);
     }
 }
