@@ -17,4 +17,9 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long >
 
     // find transactions of particular receivers account
     List<Transaction> findByToAccountId(Long accountId);
+
+
+    List<Transaction> findByFromAccount_IdOrToAccount_IdOrderByTimestampDesc(Long fromId, Long toId);
 }
+
+

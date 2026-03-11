@@ -1,5 +1,6 @@
 package com.aegiscapital.controller;
 
+import com.aegiscapital.dto.TransactionResponseDTO;
 import com.aegiscapital.dto.TransferRequestDTO;
 import com.aegiscapital.entity.Transaction;
 import com.aegiscapital.service.TransactionService;
@@ -23,11 +24,8 @@ public class TransactionController {
     }
 
     @GetMapping("/account/{accountId}")
-    public ResponseEntity<List<Transaction>> getTransactions(@PathVariable Long accountId) {
-
-        List<Transaction> transactions = transactionService.getTransactions(accountId);
-
-        return ResponseEntity.ok(transactions);
+    public ResponseEntity<List<TransactionResponseDTO>> getTransactions(@PathVariable Long accountId) {
+        return ResponseEntity.ok(transactionService.getTransactions(accountId));
     }
 
 }

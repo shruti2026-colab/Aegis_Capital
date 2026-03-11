@@ -1,5 +1,6 @@
 package com.aegiscapital.service;
 
+import com.aegiscapital.dto.TransactionResponseDTO;
 import com.aegiscapital.dto.TransferRequestDTO;
 import com.aegiscapital.entity.Transaction;
 
@@ -9,5 +10,6 @@ public interface TransactionService
 {
     void transferFunds(TransferRequestDTO request);
 
-    List<Transaction> getTransactions(Long accountId);
+    List<TransactionResponseDTO> getTransactions(Long accountId);
+
 }

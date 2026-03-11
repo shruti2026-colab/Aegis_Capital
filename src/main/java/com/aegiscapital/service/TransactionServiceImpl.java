@@ -1,5 +1,6 @@
 package com.aegiscapital.service;
 
+import com.aegiscapital.dto.TransactionResponseDTO;
 import com.aegiscapital.dto.TransferRequestDTO;
 import com.aegiscapital.entity.Account;
 import com.aegiscapital.entity.Transaction;
@@ -7,14 +8,15 @@ import com.aegiscapital.exception.AccountNotFoundException;
 import com.aegiscapital.exception.InsufficientBalanceException;
 import com.aegiscapital.respository.AccountRepository;
 import com.aegiscapital.respository.TransactionRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -59,9 +61,34 @@ public class TransactionServiceImpl implements TransactionService
         transactionRepository.save(transaction);
     }
 
-    public List<Transaction> getTransactions(Long accountId)
-    {
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TransactionResponseDTO> getTransactions(Long accountId) {
         return transactionRepository
-                .findByFromAccountIdOrToAccountId(accountId, accountId);
+                .findByFromAccount_IdOrToAccount_IdOrderByTimestampDesc(accountId, accountId)
+                .stream()
+                .map(t -> toDTO(t, accountId))
+                .collect(Collectors.toList());
+    }
+    private TransactionResponseDTO toDTO(Transaction t, Long viewerAccountId) {
+        String type = (t.getFromAccount() != null &&
+                t.getFromAccount().getId().equals(viewerAccountId))
+                ? "DEBIT" : "CREDIT";
+
+        return TransactionResponseDTO.builder()
+                .transactionId(t.getId())
+                .fromAccountId(t.getFromAccount() != null ? t.getFromAccount().getId() : null)
+                .toAccountId(t.getToAccount() != null ? t.getToAccount().getId() : null)
+                .amount(t.getAmount())
+                .status(t.getStatus())
+                .type(type)
+                .timestamp(t.getTimestamp())
+                .build();
     }
 }
+
+
+
+
