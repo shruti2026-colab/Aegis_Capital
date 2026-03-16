@@ -2,7 +2,7 @@ package com.aegiscapital.service;
 
 
 
-import com.aegiscapital.dto.LoginAccountId;
+import com.aegiscapital.dto.LoginAccountIdDTO;
 import com.aegiscapital.dto.LoginRequestDTO;
 import com.aegiscapital.dto.RegisterRequestDTO;
 import com.aegiscapital.entity.Account;
@@ -54,8 +54,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String login(LoginAccountId request) {
-        Account acc = accountRepository.findById(request.getAccId()).orElse(null);
+    public String login(LoginAccountIdDTO request) {
+        Account acc = accountRepository.findById(request.getAccountId()).orElse(null);
 
         if(acc == null){
             return "Invalid account number!";

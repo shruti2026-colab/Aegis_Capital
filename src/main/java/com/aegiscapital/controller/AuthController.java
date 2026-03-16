@@ -2,7 +2,7 @@ package com.aegiscapital.controller;
 
 
 
-import com.aegiscapital.dto.LoginAccountId;
+import com.aegiscapital.dto.LoginAccountIdDTO;
 import com.aegiscapital.dto.LoginRequestDTO;
 import com.aegiscapital.dto.RegisterRequestDTO;
 import com.aegiscapital.service.AuthService;
@@ -27,7 +27,7 @@ public class AuthController {
     }
 
     @PostMapping("/loginUsingAccountId")
-    public String loginUsingAccountId(@RequestBody LoginAccountId request){
+    public String loginUsingAccountId(@RequestBody LoginAccountIdDTO request){
 
         return authService.login(request);
     }
