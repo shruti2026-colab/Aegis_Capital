@@ -2,9 +2,12 @@ package com.aegiscapital.service;
 
 
 
+import com.aegiscapital.dto.LoginAccountId;
 import com.aegiscapital.dto.LoginRequestDTO;
 import com.aegiscapital.dto.RegisterRequestDTO;
+import com.aegiscapital.entity.Account;
 import com.aegiscapital.entity.User;
+import com.aegiscapital.respository.AccountRepository;
 import com.aegiscapital.respository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
 
     @Override
     public String register(RegisterRequestDTO request) {
@@ -47,5 +51,23 @@ public class AuthServiceImpl implements AuthService {
         }
 
         return "Login successful!";
+    }
+
+    @Override
+    public String login(LoginAccountId request) {
+        Account acc = accountRepository.findById(request.getAccId()).orElse(null);
+
+        if(acc == null){
+            return "Invalid account number!";
+        }
+        User user = userRepository.findById(acc.getUser().getId())
+                .orElse(null);
+        if(user == null) {
+            return "User doesnot Exist";
+        }
+            if (!user.getPassword().equals(request.getPassword())) {
+                return "Invalid password!!";
+            }
+        return "Login successfull!";
     }
 }

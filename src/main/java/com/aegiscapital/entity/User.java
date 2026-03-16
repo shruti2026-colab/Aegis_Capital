@@ -23,6 +23,7 @@ public class User {
     @Column(nullable = false, unique = true)
     private  String email;
 
+    @Column(nullable = false)
     private  String password;
 
     // one user can have multiple accounts
