@@ -8,12 +8,18 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    /*
+    * handler to return the custom exception message
+    */
+
+    //exception to handle situation when account not found
     @ExceptionHandler(AccountNotFoundException.class)
     public ResponseEntity<String> handleAccountNotFound(AccountNotFoundException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ex.getMessage());
     }
 
+    //exception to handle situation when balance < amount
     @ExceptionHandler(InsufficientBalanceException.class)
     public ResponseEntity<String> handleBalanceError(InsufficientBalanceException ex){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)

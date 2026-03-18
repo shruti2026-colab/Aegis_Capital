@@ -5,7 +5,6 @@ package com.aegiscapital.service;
 import com.aegiscapital.IdGenerator.IdGeneratorImpl;
 import com.aegiscapital.dto.LoginAccountIdDTO;
 import com.aegiscapital.dto.LoginRequestDTO;
-import com.aegiscapital.dto.RegisterAccountDTO;
 import com.aegiscapital.dto.RegisterRequestDTO;
 import com.aegiscapital.entity.Account;
 import com.aegiscapital.entity.User;
@@ -13,9 +12,6 @@ import com.aegiscapital.respository.AccountRepository;
 import com.aegiscapital.respository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,41 +32,16 @@ public class AuthServiceImpl implements AuthService {
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());
-        user.setMobileNumber(request.getMobileNumber());
 
         userRepository.save(user);
 
-        User savedUser = user;
-        savedUser.setUserId(idGenerator.generateUserId(user.getName(), user.getId()));
+        User savedUser = userRepository.save(user);
+        savedUser.setUserId(idGenerator.generateUserId(request.getName(), savedUser.getId()));
+
         userRepository.save(savedUser);
 
         return "User registered successfully!";
     }
-
-    @Override
-    public String openAccount(RegisterAccountDTO request) {
-        if (request.getAmount().compareTo(BigDecimal.ZERO) < 0) {
-            throw new RuntimeException("Amount cannot be negative");
-        }
-
-        if (userRepository.findById(request.getUser().getId()).isPresent()) {
-
-            Account account = new Account();
-            account.setUser(request.getUser());
-            account.setBalance(request.getAmount());
-            accountRepository.save(account);
-
-            Account savedAccount = account;
-            savedAccount.setAccountNumber(idGenerator.generateAccountId(account.getId()));
-            accountRepository.save(savedAccount);
-            return "Account created successfully!!";
-
-        } else {
-            return "User doesnot exist";
-        }
-    }
-
-
 
     @Override
     public String login(LoginRequestDTO request) {

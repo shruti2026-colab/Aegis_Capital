@@ -17,12 +17,14 @@ public class TransactionController {
 
     private final TransactionService transactionService;
 
+    //transfer api using account number of both the user
     @PostMapping("/transfer")
     public ResponseEntity<String> transferFunds(@RequestBody TransferRequestDTO request){
         transactionService.transferFunds(request);
         return ResponseEntity.ok("Funds transferred successfully");
     }
 
+    //get history of all the transaction
     @GetMapping("/account/{accountId}")
     public ResponseEntity<List<TransactionResponseDTO>> getTransactions(@PathVariable Long accountId) {
         return ResponseEntity.ok(transactionService.getTransactions(accountId));
