@@ -20,7 +20,7 @@ public class User {
     @Column(unique = true)
     private String userId;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String mobileNumber;
 
     @Column(nullable = false)

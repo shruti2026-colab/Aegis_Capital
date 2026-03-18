@@ -1,10 +1,9 @@
 package com.aegiscapital.service;
 
-
-
 import com.aegiscapital.IdGenerator.IdGeneratorImpl;
 import com.aegiscapital.dto.LoginAccountIdDTO;
 import com.aegiscapital.dto.LoginRequestDTO;
+import com.aegiscapital.dto.RegisterAccountDTO;
 import com.aegiscapital.dto.RegisterRequestDTO;
 import com.aegiscapital.entity.Account;
 import com.aegiscapital.entity.User;
@@ -19,14 +18,11 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
-
-    private final PasswordEncoder passwordEncoder;
-
-
     private final AccountRepository accountRepository;
+    private final PasswordEncoder passwordEncoder;
     private final IdGeneratorImpl idGenerator;
 
-
+    //  REGISTER USER
     @Override
     public String register(RegisterRequestDTO request) {
 
@@ -37,23 +33,20 @@ public class AuthServiceImpl implements AuthService {
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
-        user.setMobileNumber(request.getMobileNumber());
-
-        //  ENCRYPT PASSWORD
+       user.setMobileNumber(request.getMobileNumber());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        userRepository.save(user);
 
         User savedUser = userRepository.save(user);
-        savedUser.setUserId(idGenerator.generateUserId(request.getName(), savedUser.getId()));
-
+        savedUser.setUserId(
+                idGenerator.generateUserId(request.getName(), savedUser.getId())
+        );
         userRepository.save(savedUser);
 
         return "User registered successfully!";
     }
 
-
-
+    // LOGIN USING EMAIL
     @Override
     public String login(LoginRequestDTO request) {
 
@@ -64,7 +57,6 @@ public class AuthServiceImpl implements AuthService {
             return "User does not exist!";
         }
 
-        // PROPER PASSWORD CHECK
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             return "Invalid password!";
         }
@@ -72,23 +64,32 @@ public class AuthServiceImpl implements AuthService {
         return "Login successful!";
     }
 
-
-
+    // LOGIN USING ACCOUNT ID
     @Override
     public String login(LoginAccountIdDTO request) {
-        Account acc = accountRepository.findById(request.getAccountId()).orElse(null);
 
-        if(acc == null){
+        Account acc = accountRepository.findById(request.getAccountId())
+                .orElse(null);
+
+        if (acc == null) {
             return "Invalid account number!";
         }
-        User user = userRepository.findById(acc.getUser().getId())
-                .orElse(null);
-        if(user == null) {
-            return "User doesnot Exist";
+
+        User user = acc.getUser();
+
+        if (user == null) {
+            return "User does not exist!";
         }
-            if (!user.getPassword().equals(request.getPassword())) {
-                return "Invalid password!!";
-            }
-        return "Login successfull!";
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            return "Invalid password!";
+        }
+
+        return "Login successful!";
+    }
+    @Override
+    public String openAccount(RegisterAccountDTO request) {
+
+        return "Account opened successfully!";
     }
 }
