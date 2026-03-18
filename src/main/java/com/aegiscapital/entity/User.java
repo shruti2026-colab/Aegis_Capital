@@ -17,6 +17,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // generates new id directly
     private Long id;
 
+    @Column(unique = true)
+    private String userId;
+
+    @Column(unique = true, nullable = false)
+    private String mobileNumber;
+
     @Column(nullable = false)
     private String name;
 

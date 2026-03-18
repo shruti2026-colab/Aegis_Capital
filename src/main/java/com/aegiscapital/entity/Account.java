@@ -17,6 +17,9 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
+    private String accountNumber;
+
     @Column(nullable = false)
     private BigDecimal balance;  // to store amount in account, check balance
 
