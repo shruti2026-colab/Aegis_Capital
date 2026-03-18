@@ -2,6 +2,7 @@ package com.aegiscapital.service;
 
 
 
+import com.aegiscapital.IdGenerator.IdGeneratorImpl;
 import com.aegiscapital.dto.LoginAccountIdDTO;
 import com.aegiscapital.dto.LoginRequestDTO;
 import com.aegiscapital.dto.RegisterRequestDTO;
@@ -18,6 +19,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final AccountRepository accountRepository;
+    private final IdGeneratorImpl idGenerator;
 
     @Override
     public String register(RegisterRequestDTO request) {
@@ -32,6 +34,11 @@ public class AuthServiceImpl implements AuthService {
         user.setPassword(request.getPassword());
 
         userRepository.save(user);
+
+        User savedUser = userRepository.save(user);
+        savedUser.setUserId(idGenerator.generateUserId(request.getName(), savedUser.getId()));
+
+        userRepository.save(savedUser);
 
         return "User registered successfully!";
     }

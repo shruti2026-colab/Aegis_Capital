@@ -1,5 +1,6 @@
 package com.aegiscapital.service;
 
+import com.aegiscapital.IdGenerator.IdGeneratorImpl;
 import com.aegiscapital.dto.TransactionResponseDTO;
 import com.aegiscapital.dto.TransferRequestDTO;
 import com.aegiscapital.entity.Account;
@@ -24,6 +25,7 @@ public class TransactionServiceImpl implements TransactionService
 {
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
+    private final IdGeneratorImpl idGenerator;
 
     @Override
     @Transactional
@@ -59,6 +61,10 @@ public class TransactionServiceImpl implements TransactionService
                 .build();
 
         transactionRepository.save(transaction);
+
+        Transaction savedTransaction = transaction;
+        savedTransaction.setTransactionId(idGenerator.generateTransactionId(transaction.getId()));
+        transactionRepository.save(savedTransaction);
     }
 
 

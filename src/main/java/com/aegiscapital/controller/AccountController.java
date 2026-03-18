@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 public class AccountController {
 
     private final AccountService accountService;
-
+    
     @PostMapping("/deposit")
     public String deposit(@RequestBody DepositRequestDTO request) {
 

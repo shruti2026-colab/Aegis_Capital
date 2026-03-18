@@ -1,5 +1,6 @@
 package com.aegiscapital.service;
 
+import com.aegiscapital.IdGenerator.IdGeneratorImpl;
 import com.aegiscapital.entity.Account;
 import com.aegiscapital.entity.Transaction;
 import com.aegiscapital.exception.AccountNotFoundException;
@@ -17,10 +18,12 @@ public class AccountServiceImpl implements AccountService
 {
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
+    private final IdGeneratorImpl idGenerator;
 
-    public AccountServiceImpl(AccountRepository accountRepository, TransactionRepository transactionRepository) {
+    public AccountServiceImpl(AccountRepository accountRepository, TransactionRepository transactionRepository, IdGeneratorImpl idGenerator) {
         this.accountRepository = accountRepository;
         this.transactionRepository = transactionRepository;
+        this.idGenerator = idGenerator;
     }
 
     @Override
@@ -42,6 +45,10 @@ public class AccountServiceImpl implements AccountService
                 .build();
 
         transactionRepository.save(transaction);
+
+        Transaction savedTransaction = transaction;
+        savedTransaction.setTransactionId(idGenerator.generateTransactionId(transaction.getId()));
+        transactionRepository.save(savedTransaction);
     }
 
     @Override
@@ -69,6 +76,10 @@ public class AccountServiceImpl implements AccountService
                 .build();
 
         transactionRepository.save(transaction);
+
+        Transaction savedTransaction = transaction;
+        savedTransaction.setTransactionId(idGenerator.generateTransactionId(transaction.getId()));
+        transactionRepository.save(savedTransaction);
     }
 
     @Override
