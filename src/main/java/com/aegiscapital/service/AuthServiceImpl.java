@@ -19,13 +19,13 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
-<<<<<<< HEAD
+
     private final PasswordEncoder passwordEncoder;
 
-=======
+
     private final AccountRepository accountRepository;
     private final IdGeneratorImpl idGenerator;
->>>>>>> 1acd9d364927076bdcfd6c6717d9a8419d7d1443
+
 
     @Override
     public String register(RegisterRequestDTO request) {
@@ -37,6 +37,7 @@ public class AuthServiceImpl implements AuthService {
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
+        user.setMobileNumber(request.getMobileNumber());
 
         //  ENCRYPT PASSWORD
         user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -70,9 +71,8 @@ public class AuthServiceImpl implements AuthService {
 
         return "Login successful!";
     }
-<<<<<<< HEAD
-}
-=======
+
+
 
     @Override
     public String login(LoginAccountIdDTO request) {
@@ -92,4 +92,3 @@ public class AuthServiceImpl implements AuthService {
         return "Login successfull!";
     }
 }
->>>>>>> 1acd9d364927076bdcfd6c6717d9a8419d7d1443
