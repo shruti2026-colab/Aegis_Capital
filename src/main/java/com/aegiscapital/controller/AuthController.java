@@ -16,16 +16,19 @@ public class AuthController {
 
     private final AuthService authService;
 
+    //register api with name, email and password as input
     @PostMapping("/register")
     public String register(@RequestBody RegisterRequestDTO request) {
         return authService.register(request);
     }
 
+    //login api with email and password as input
     @PostMapping("/login")
     public String login(@RequestBody LoginRequestDTO request) {
         return authService.login(request);
     }
 
+    //login api using account id and password
     @PostMapping("/loginUsingAccountId")
     public String loginUsingAccountId(@RequestBody LoginAccountIdDTO request){
 
