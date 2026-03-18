@@ -15,6 +15,7 @@ public class AccountController {
 
     private final AccountService accountService;
 
+    //deposit api with account id and amount as input
     @PostMapping("/deposit")
     public String deposit(@RequestBody DepositRequestDTO request) {
 
@@ -22,6 +23,7 @@ public class AccountController {
         return "Deposit successful";
     }
 
+    //withdraw api with account id, password and amount as input
     @PostMapping("/withdraw")
     public String withdraw(@RequestBody WithdrawRequestDTO request) {
 
@@ -29,6 +31,7 @@ public class AccountController {
         return "Withdraw successful";
     }
 
+    //get balance api with account id as input
     @GetMapping("/{id}/balance")
     public BigDecimal getBalance(@PathVariable Long id) {
 
