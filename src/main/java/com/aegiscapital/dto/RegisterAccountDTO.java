@@ -9,5 +9,5 @@ import java.math.BigDecimal;
 public class RegisterAccountDTO {
 
     private BigDecimal amount;
-    private User user;
+    private String userId;
 }

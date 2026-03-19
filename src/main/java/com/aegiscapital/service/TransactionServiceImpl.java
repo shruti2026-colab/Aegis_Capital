@@ -32,9 +32,9 @@ public class TransactionServiceImpl implements TransactionService
     public void transferFunds(TransferRequestDTO request)
     {
         // throws new custom made exception if account not found for both sender and receiver
-        Account sender = accountRepository.findById(request.getFromAccountId())
+        Account sender = accountRepository.findByAccountNumber(request.getFromAccountNumber())
                 .orElseThrow(() -> new AccountNotFoundException("Sender account not found"));
-        Account receiver = accountRepository.findById(request.getToAccountId())
+        Account receiver = accountRepository.findByAccountNumber(request.getToAccountNumber())
                 .orElseThrow(() -> new AccountNotFoundException("Receiver account not found"));
 
         BigDecimal amount = request.getAmount();
@@ -58,35 +58,34 @@ public class TransactionServiceImpl implements TransactionService
                 .amount(amount)
                 .status("Funds Transferring SUCCESS")
                 .timestamp(LocalDateTime.now())
+                .transactionId(idGenerator.generateTransactionId())
+                .fromAccountNumber(sender.getAccountNumber())
+                .toAccountNumber(receiver.getAccountNumber())
                 .build();
 
         transactionRepository.save(transaction);
 
-        Transaction savedTransaction = transaction;
-        savedTransaction.setTransactionId(idGenerator.generateTransactionId(transaction.getId()));
-        transactionRepository.save(savedTransaction);
     }
-
 
 
     @Override
     @Transactional(readOnly = true)
-    public List<TransactionResponseDTO> getTransactions(Long accountId) {
+    public List<TransactionResponseDTO> getTransactions(String accountNumber) {
         return transactionRepository
-                .findByFromAccount_IdOrToAccount_IdOrderByTimestampDesc(accountId, accountId)
+                .findByFromAccountNumberOrToAccountNumberOrderByTimestampDesc(accountNumber, accountNumber)
                 .stream()
-                .map(t -> toDTO(t, accountId))
+                .map(t -> toDTO(t, accountNumber))
                 .collect(Collectors.toList());
     }
-    private TransactionResponseDTO toDTO(Transaction t, Long viewerAccountId) {
+    private TransactionResponseDTO toDTO(Transaction t, String viewerAccountNumber) {
         String type = (t.getFromAccount() != null &&
-                t.getFromAccount().getId().equals(viewerAccountId))
+                t.getFromAccount().getAccountNumber().equals(viewerAccountNumber))
                 ? "DEBIT" : "CREDIT";
 
         return TransactionResponseDTO.builder()
                 .transactionId(t.getId())
-                .fromAccountId(t.getFromAccount() != null ? t.getFromAccount().getId() : null)
-                .toAccountId(t.getToAccount() != null ? t.getToAccount().getId() : null)
+                .fromAccountNumber(t.getFromAccount() != null ? t.getFromAccount().getAccountNumber() : null)
+                .toAccountNumber(t.getToAccount() != null ? t.getToAccount().getAccountNumber() : null)
                 .amount(t.getAmount())
                 .status(t.getStatus())
                 .type(type)

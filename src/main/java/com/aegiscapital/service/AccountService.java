@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 
 public interface AccountService
 {
-    void deposit(Long accountId, BigDecimal amount);
-    void withdraw(Long accountId, BigDecimal amount);
-    BigDecimal getBalance(Long accountId);
+    void deposit(String accountNumber, BigDecimal amount);
+    void withdraw(String accountNumber, BigDecimal amount);
+    BigDecimal getBalance(String accountNumber);
 
 }

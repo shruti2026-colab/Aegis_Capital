@@ -10,16 +10,16 @@ import java.util.List;
 public interface TransactionRepository extends JpaRepository<Transaction, Long > {
 
     // to find transaction details sender account to receiver account
-    List<Transaction> findByFromAccountIdOrToAccountId(Long fromAccountId, Long toAccountId);
+    List<Transaction> findByFromAccountNumberOrToAccountNumber(String fromAccountNumber, String toAccountNumber);
 
     // find transactions of particular sender account
-    List<Transaction> findByFromAccountId(Long accountId);
+    List<Transaction> findByFromAccountNumber(String accountNumber);
 
     // find transactions of particular receivers account
-    List<Transaction> findByToAccountId(Long accountId);
+    List<Transaction> findByToAccountNumber(String accountNumber);
 
 
-    List<Transaction> findByFromAccount_IdOrToAccount_IdOrderByTimestampDesc(Long fromId, Long toId);
+    List<Transaction> findByFromAccountNumberOrToAccountNumberOrderByTimestampDesc(String fromAccountNumber, String toAccountNumber);
 }
 
 

@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 public class TransactionResponseDTO {
 
     private Long transactionId;
-    private Long fromAccountId;
-    private Long toAccountId;
+    private String fromAccountNumber;
+    private String toAccountNumber;
     private BigDecimal amount;
     private String type;
     private String status;

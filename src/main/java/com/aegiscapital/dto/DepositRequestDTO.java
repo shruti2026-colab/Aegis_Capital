@@ -7,6 +7,6 @@ import java.math.BigDecimal;
 @Data
 public class DepositRequestDTO {
 
-        private Long accountId;
+        private String accountNumber;
         private BigDecimal amount;
 }

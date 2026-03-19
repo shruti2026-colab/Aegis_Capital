@@ -11,10 +11,10 @@ import java.math.BigDecimal;
 public class TransferRequestDTO {
 
     @NotNull(message = "Sender account ID is required")
-    private Long fromAccountId;
+    private String fromAccountNumber;
 
     @NotNull(message = "Receiver account Id is required")
-    private Long toAccountId;
+    private String toAccountNumber;
 
     @NotNull(message = "Transfer amount is required")
     @DecimalMin(value = "0.01", message = "Amount must be greater than 0")

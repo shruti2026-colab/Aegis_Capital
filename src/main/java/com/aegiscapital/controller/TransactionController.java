@@ -25,9 +25,9 @@ public class TransactionController {
     }
 
     //get history of all the transaction
-    @GetMapping("/account/{accountId}")
-    public ResponseEntity<List<TransactionResponseDTO>> getTransactions(@PathVariable Long accountId) {
-        return ResponseEntity.ok(transactionService.getTransactions(accountId));
+    @GetMapping("/account/{accountNumber}")
+    public ResponseEntity<List<TransactionResponseDTO>> getTransactions(@PathVariable String accountNumber) {
+        return ResponseEntity.ok(transactionService.getTransactions(accountNumber));
     }
 
 }

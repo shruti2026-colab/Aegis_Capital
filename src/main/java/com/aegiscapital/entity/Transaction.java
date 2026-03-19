@@ -7,7 +7,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name ="transactions")
+@Table(name ="transactions",
+        uniqueConstraints = @UniqueConstraint(columnNames = "transaction_id")
+)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,7 +21,7 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String transactionId;
 
     @Column(nullable = false)
@@ -38,6 +40,10 @@ public class Transaction {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "to_account_id")
     private Account toAccount;  // account receiving money
+
+    private String fromAccountNumber;
+
+    private String toAccountNumber;
 
 
 

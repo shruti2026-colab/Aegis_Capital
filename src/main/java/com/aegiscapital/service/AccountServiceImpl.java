@@ -27,10 +27,10 @@ public class AccountServiceImpl implements AccountService
     }
 
     @Override
-    public void deposit(Long accountId, BigDecimal amount)
+    public void deposit(String accountNumber, BigDecimal amount)
     {
         // throws new custom made exception if account not found
-        Account account = accountRepository.findById(accountId)
+        Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new AccountNotFoundException("Account not found"));
         account.setBalance(account.getBalance().add(amount));
         accountRepository.save(account);
@@ -42,19 +42,17 @@ public class AccountServiceImpl implements AccountService
                 .amount(amount)
                 .status("Deposit SUCCESS")
                 .timestamp(LocalDateTime.now())
+                .transactionId(idGenerator.generateTransactionId())
+                .fromAccountNumber(accountNumber)
                 .build();
 
         transactionRepository.save(transaction);
-
-        Transaction savedTransaction = transaction;
-        savedTransaction.setTransactionId(idGenerator.generateTransactionId(transaction.getId()));
-        transactionRepository.save(savedTransaction);
     }
 
     @Override
-    public void withdraw(Long accountId, BigDecimal amount)
+    public void withdraw(String accountNumber, BigDecimal amount)
     {
-        Account account = accountRepository.findById(accountId)
+        Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new AccountNotFoundException("Account not found"));
         if(account.getBalance().compareTo(amount) < 0)
         {
@@ -73,20 +71,18 @@ public class AccountServiceImpl implements AccountService
                 .amount(amount)
                 .status("Withdraw SUCCESS")
                 .timestamp(LocalDateTime.now())
+                .transactionId(idGenerator.generateTransactionId())
+                .fromAccountNumber(accountNumber)
                 .build();
 
         transactionRepository.save(transaction);
-
-        Transaction savedTransaction = transaction;
-        savedTransaction.setTransactionId(idGenerator.generateTransactionId(transaction.getId()));
-        transactionRepository.save(savedTransaction);
     }
 
     @Override
-    public BigDecimal getBalance(Long accountId)
+    public BigDecimal getBalance(String accountNumber)
     {
        // throws new custom made exception if account not found
-        Account account = accountRepository.findById(accountId)
+        Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new AccountNotFoundException("Account not found"));
 
         return account.getBalance();

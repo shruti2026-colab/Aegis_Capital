@@ -10,6 +10,6 @@ public interface TransactionService
 {
     void transferFunds(TransferRequestDTO request);
 
-    List<TransactionResponseDTO> getTransactions(Long accountId);
+    List<TransactionResponseDTO> getTransactions(String accountNumber);
 
 }

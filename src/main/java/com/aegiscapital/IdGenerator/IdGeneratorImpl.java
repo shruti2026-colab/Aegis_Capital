@@ -2,22 +2,27 @@ package com.aegiscapital.IdGenerator;
 
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 public class IdGeneratorImpl
 {
-    //generating accout id in format AGSXXXXX1
-    public String generateAccountId(Long id){
-        return "AGS" + String.format("%06d", id);
+    //generating accout id in format AGS-XXXXXXXX
+    public String generateAccountNumber(){
+        return "AGS-" + UUID.randomUUID().toString().replace("-", "").substring(0, 10).toUpperCase();
     }
 
-    //generating transaction id in format TXNXXXXX1
-    public String generateTransactionId(Long id){
-        return "TXN" + String.format("%06d", id);
+    //generating transaction id in format TXN-XXXXXXXX
+    public String generateTransactionId(){
+        return "TXN-" + UUID.randomUUID().toString().replace("-", "").substring(0, 10).toUpperCase();
     }
 
-    //generating user id in format <first_3_chars of username>XXXXX1
-    public String generateUserId(String name, Long id){
+    //generating user id in format <first_3_chars of username>-XXXXXXXX
+    public String generateUserId(String name){
         String prefix = name.substring(0,Math.min(3, name.length())).toUpperCase();
-        return prefix + String.format("%06d", id);
+        return prefix + "-" + UUID.randomUUID().toString()
+                .replace("-", "")
+                .substring(0, 8)
+                .toUpperCase();
     }
 }

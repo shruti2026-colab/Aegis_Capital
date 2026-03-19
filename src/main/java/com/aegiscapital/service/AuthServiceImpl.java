@@ -13,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -33,15 +36,11 @@ public class AuthServiceImpl implements AuthService {
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
-       user.setMobileNumber(request.getMobileNumber());
+        user.setMobileNumber(request.getMobileNumber());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setUserId(idGenerator.generateUserId(request.getName()));
 
-
-        User savedUser = userRepository.save(user);
-        savedUser.setUserId(
-                idGenerator.generateUserId(request.getName(), savedUser.getId())
-        );
-        userRepository.save(savedUser);
+        userRepository.save(user);
 
         return "User registered successfully!";
     }
@@ -68,8 +67,8 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String login(LoginAccountIdDTO request) {
 
-        Account acc = accountRepository.findById(request.getAccountId())
-                .orElse(null);
+        Account acc = accountRepository.findByAccountNumber(request.getAccountNumber())
+        .orElse(null);
 
         if (acc == null) {
             return "Invalid account number!";
@@ -90,6 +89,26 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String openAccount(RegisterAccountDTO request) {
 
-        return "Account opened successfully!";
+        if (request.getAmount().compareTo(BigDecimal.ZERO) < 0) {
+            throw new RuntimeException("Amount cannot be negative");
+        }
+
+        User user = userRepository.findByUserId(request.getUserId());
+            if(user != null) {
+                Account account = new Account();
+                account.setUser(user);
+                account.setBalance(request.getAmount());
+                accountRepository.save(account);
+
+                Account savedAccount = account;
+                savedAccount.setAccountNumber(idGenerator.generateAccountNumber());
+                accountRepository.save(savedAccount);
+                return "Account created successfully!!";
+            }
+            else{
+                throw new RuntimeException("User doesnt exist");
+            }
+
+
     }
 }
