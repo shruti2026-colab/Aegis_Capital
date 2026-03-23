@@ -9,6 +9,7 @@ import com.aegiscapital.entity.Account;
 import com.aegiscapital.entity.User;
 import com.aegiscapital.respository.AccountRepository;
 import com.aegiscapital.respository.UserRepository;
+import com.aegiscapital.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class AuthServiceImpl implements AuthService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final IdGeneratorImpl idGenerator;
-
+    private final JwtUtil jwtUtil;
     //  REGISTER USER
     @Override
     public String register(RegisterRequestDTO request) {
@@ -60,7 +61,7 @@ public class AuthServiceImpl implements AuthService {
             return "Invalid password!";
         }
 
-        return "Login successful!";
+        return jwtUtil.generateToken(user.getEmail());
     }
 
     // LOGIN USING ACCOUNT ID
