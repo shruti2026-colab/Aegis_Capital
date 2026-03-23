@@ -7,6 +7,7 @@ import com.aegiscapital.dto.RegisterAccountDTO;
 import com.aegiscapital.dto.RegisterRequestDTO;
 import com.aegiscapital.entity.Account;
 import com.aegiscapital.entity.User;
+import com.aegiscapital.exception.*;
 import com.aegiscapital.respository.AccountRepository;
 import com.aegiscapital.respository.UserRepository;
 import com.aegiscapital.security.JwtUtil;
@@ -31,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
     public String register(RegisterRequestDTO request) {
 
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            return "Email already exists!";
+            throw new SimilarEmailException("Email already exists!\nPlease enter another email address");
         }
 
         User user = new User();
@@ -54,11 +55,11 @@ public class AuthServiceImpl implements AuthService {
                 .orElse(null);
 
         if (user == null) {
-            return "User does not exist!";
+            throw new InvalidUserException("User does not exist!\nUser should be registered first or enter an existing user email");
         }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            return "Invalid password!";
+            throw new IncorrectPasswordException("Invalid password!");
         }
 
         return jwtUtil.generateToken(user.getEmail());
@@ -72,17 +73,17 @@ public class AuthServiceImpl implements AuthService {
         .orElse(null);
 
         if (acc == null) {
-            return "Invalid account number!";
+            throw new InvalidAccountNumberException("Invalid account number!\nplease Enter valid account number!!!");
         }
 
         User user = acc.getUser();
 
         if (user == null) {
-            return "User does not exist!";
+            throw new InvalidUserException("User does not exist!\nUser should be registered first or enter an existing user number");
         }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            return "Invalid password!";
+            throw new IncorrectPasswordException("Invalid password!");
         }
 
         return "Login successful!";
@@ -91,7 +92,7 @@ public class AuthServiceImpl implements AuthService {
     public String openAccount(RegisterAccountDTO request) {
 
         if (request.getAmount().compareTo(BigDecimal.ZERO) < 0) {
-            throw new RuntimeException("Amount cannot be negative");
+            throw new NegativeNumberException("Amount cannot be negative");
         }
 
         User user = userRepository.findByUserId(request.getUserId());
@@ -99,15 +100,13 @@ public class AuthServiceImpl implements AuthService {
                 Account account = new Account();
                 account.setUser(user);
                 account.setBalance(request.getAmount());
-
-
-
                 account.setAccountNumber(idGenerator.generateAccountNumber());
+                account.setPin(passwordEncoder.encode(request.getPin()));
                 accountRepository.save(account);
                 return "Account created successfully!!";
             }
             else{
-                throw new RuntimeException("User doesnt exist");
+                throw new InvalidUserException("User does not exist!\nUser should be registered first to open an account or enter an existing user number");
             }
 
 

@@ -19,4 +19,5 @@ public class TransferRequestDTO {
     @NotNull(message = "Transfer amount is required")
     @DecimalMin(value = "0.01", message = "Amount must be greater than 0")
     private BigDecimal amount;
+
 }

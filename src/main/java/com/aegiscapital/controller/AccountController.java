@@ -19,7 +19,7 @@ public class AccountController {
     @PostMapping("/deposit")
     public String deposit(@RequestBody DepositRequestDTO request) {
 
-        accountService.deposit(request.getAccountNumber(), request.getAmount());
+        accountService.deposit(request);
         return "Deposit successful";
     }
 
@@ -27,7 +27,7 @@ public class AccountController {
     @PostMapping("/withdraw")
     public String withdraw(@RequestBody WithdrawRequestDTO request) {
 
-        accountService.withdraw(request.getAccountNumber(), request.getAmount());
+        accountService.withdraw(request);
         return "Withdraw successful";
     }
 

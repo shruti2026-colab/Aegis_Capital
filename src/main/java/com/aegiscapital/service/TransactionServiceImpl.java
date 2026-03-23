@@ -9,6 +9,7 @@ import com.aegiscapital.exception.AccountNotFoundException;
 import com.aegiscapital.exception.InsufficientBalanceException;
 import com.aegiscapital.respository.AccountRepository;
 import com.aegiscapital.respository.TransactionRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 
@@ -23,9 +25,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TransactionServiceImpl implements TransactionService
 {
+    Scanner sc = new Scanner(System.in);
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
     private final IdGeneratorImpl idGenerator;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -43,6 +47,11 @@ public class TransactionServiceImpl implements TransactionService
         {
             // throws new custom made exception if balance is insufficient
             throw new InsufficientBalanceException("Insufficient balance");
+        }
+        System.out.println("Enter the Pin: ");
+        String pin = sc.next();
+        if(!passwordEncoder.matches(pin, sender.getPin())){
+            throw new RuntimeException("Enter the right pin");
         }
 
         sender.setBalance(sender.getBalance().subtract(amount));
