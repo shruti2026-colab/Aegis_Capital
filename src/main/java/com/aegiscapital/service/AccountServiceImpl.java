@@ -6,6 +6,7 @@ import com.aegiscapital.dto.WithdrawRequestDTO;
 import com.aegiscapital.entity.Account;
 import com.aegiscapital.entity.Transaction;
 import com.aegiscapital.exception.AccountNotFoundException;
+import com.aegiscapital.exception.IncorrectPINException;
 import com.aegiscapital.exception.InsufficientBalanceException;
 import com.aegiscapital.respository.AccountRepository;
 import com.aegiscapital.respository.TransactionRepository;
@@ -71,7 +72,7 @@ public class AccountServiceImpl implements AccountService
         System.out.println("Enter the Pin: ");
         String pin = sc.next();
         if(!passwordEncoder.matches(pin, account.getPin())){
-            throw new RuntimeException("Enter the right pin");
+            throw new IncorrectPINException("Enter the right pin");
         }
         account.setBalance(account.getBalance().subtract(request.getAmount()));
 
