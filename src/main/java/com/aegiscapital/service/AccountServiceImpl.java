@@ -1,6 +1,8 @@
 package com.aegiscapital.service;
 
 import com.aegiscapital.IdGenerator.IdGeneratorImpl;
+import com.aegiscapital.dto.DepositRequestDTO;
+import com.aegiscapital.dto.WithdrawRequestDTO;
 import com.aegiscapital.entity.Account;
 import com.aegiscapital.entity.Transaction;
 import com.aegiscapital.exception.AccountNotFoundException;
@@ -8,27 +10,34 @@ import com.aegiscapital.exception.InsufficientBalanceException;
 import com.aegiscapital.respository.AccountRepository;
 import com.aegiscapital.respository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Scanner;
 
 @Service
 public class AccountServiceImpl implements AccountService
 {
+    Scanner sc = new Scanner(System.in);
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
     private final IdGeneratorImpl idGenerator;
+    private final PasswordEncoder passwordEncoder;
 
-    public AccountServiceImpl(AccountRepository accountRepository, TransactionRepository transactionRepository, IdGeneratorImpl idGenerator) {
+    public AccountServiceImpl(AccountRepository accountRepository, TransactionRepository transactionRepository, IdGeneratorImpl idGenerator, PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
         this.transactionRepository = transactionRepository;
         this.idGenerator = idGenerator;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public void deposit(String accountNumber, BigDecimal amount)
+    public void deposit(DepositRequestDTO request)
     {
+        String accountNumber = request.getAccountNumber();
+        BigDecimal amount = request.getAmount();
         // throws new custom made exception if account not found
         Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new AccountNotFoundException("Account not found"));
@@ -50,17 +59,21 @@ public class AccountServiceImpl implements AccountService
     }
 
     @Override
-    public void withdraw(String accountNumber, BigDecimal amount)
+    public void withdraw(WithdrawRequestDTO request)
     {
-        Account account = accountRepository.findByAccountNumber(accountNumber)
+        Account account = accountRepository.findByAccountNumber(request.getAccountNumber())
                 .orElseThrow(() -> new AccountNotFoundException("Account not found"));
-        if(account.getBalance().compareTo(amount) < 0)
+        if(account.getBalance().compareTo(request.getAmount()) < 0)
         {
             // throws new custom made exception if there no sufficient balance in account
             throw new InsufficientBalanceException("Insufficient balance");
         }
-
-        account.setBalance(account.getBalance().subtract(amount));
+        System.out.println("Enter the Pin: ");
+        String pin = sc.next();
+        if(!passwordEncoder.matches(pin, account.getPin())){
+            throw new RuntimeException("Enter the right pin");
+        }
+        account.setBalance(account.getBalance().subtract(request.getAmount()));
 
         accountRepository.save(account);
 
@@ -68,11 +81,11 @@ public class AccountServiceImpl implements AccountService
         Transaction transaction = Transaction.builder()
                 .fromAccount(account) // withdrawer accountid is stored
                 .toAccount(null) //since withdraw is done from self account toAccoun will be null
-                .amount(amount)
+                .amount(request.getAmount())
                 .status("Withdraw SUCCESS")
                 .timestamp(LocalDateTime.now())
                 .transactionId(idGenerator.generateTransactionId())
-                .fromAccountNumber(accountNumber)
+                .fromAccountNumber(request.getAccountNumber())
                 .build();
 
         transactionRepository.save(transaction);

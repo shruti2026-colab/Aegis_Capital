@@ -10,4 +10,5 @@ public class RegisterAccountDTO {
 
     private BigDecimal amount;
     private String userId;
+    private String pin;
 }
