@@ -98,11 +98,11 @@ public class AuthServiceImpl implements AuthService {
                 Account account = new Account();
                 account.setUser(user);
                 account.setBalance(request.getAmount());
-                accountRepository.save(account);
 
-                Account savedAccount = account;
-                savedAccount.setAccountNumber(idGenerator.generateAccountNumber());
-                accountRepository.save(savedAccount);
+
+
+                account.setAccountNumber(idGenerator.generateAccountNumber());
+                accountRepository.save(account);
                 return "Account created successfully!!";
             }
             else{
