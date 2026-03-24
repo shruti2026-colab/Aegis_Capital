@@ -41,7 +41,7 @@ public class AuthServiceImpl implements AuthService {
         user.setMobileNumber(request.getMobileNumber());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setUserId(idGenerator.generateUserId(request.getName()));
-
+        user.setRole("ROLE_USER");
         userRepository.save(user);
 
         return "User registered successfully!";
@@ -62,7 +62,7 @@ public class AuthServiceImpl implements AuthService {
             throw new IncorrectPasswordException("Invalid password!");
         }
 
-        return jwtUtil.generateToken(user.getEmail());
+        return jwtUtil.generateToken(user.getEmail(),user.getRole());
     }
 
     // LOGIN USING ACCOUNT ID

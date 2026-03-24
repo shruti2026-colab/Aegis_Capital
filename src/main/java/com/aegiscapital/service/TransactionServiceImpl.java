@@ -7,6 +7,7 @@ import com.aegiscapital.entity.Account;
 import com.aegiscapital.entity.Transaction;
 import com.aegiscapital.exception.AccountNotFoundException;
 import com.aegiscapital.exception.InsufficientBalanceException;
+import com.aegiscapital.exception.UnauthorizedAccessException;
 import com.aegiscapital.respository.AccountRepository;
 import com.aegiscapital.respository.TransactionRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,7 +41,7 @@ public class TransactionServiceImpl implements TransactionService
                 .orElseThrow(() -> new AccountNotFoundException("Sender account not found"));
         Account receiver = accountRepository.findByAccountNumber(request.getToAccountNumber())
                 .orElseThrow(() -> new AccountNotFoundException("Receiver account not found"));
-
+        validateAccountOwnership(sender);
         BigDecimal amount = request.getAmount();
 
         if(sender.getBalance().compareTo(amount) < 0)
@@ -80,12 +81,20 @@ public class TransactionServiceImpl implements TransactionService
     @Override
     @Transactional(readOnly = true)
     public List<TransactionResponseDTO> getTransactions(String accountNumber) {
+        Account account = accountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
+
+        //  Authorization check
+
+        validateAccountOwnership(account);
+
         return transactionRepository
                 .findByFromAccountNumberOrToAccountNumberOrderByTimestampDesc(accountNumber, accountNumber)
                 .stream()
                 .map(t -> toDTO(t, accountNumber))
                 .collect(Collectors.toList());
     }
+
     private TransactionResponseDTO toDTO(Transaction t, String viewerAccountNumber) {
         String type = (t.getFromAccount() != null &&
                 t.getFromAccount().getAccountNumber().equals(viewerAccountNumber))
@@ -100,6 +109,17 @@ public class TransactionServiceImpl implements TransactionService
                 .type(type)
                 .timestamp(t.getTimestamp())
                 .build();
+    }
+    private void validateAccountOwnership(Account account) {
+        String loggedInEmail = org.springframework.security.core.context.SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        if (account.getUser() == null ||
+                !account.getUser().getEmail().equals(loggedInEmail)) {
+            throw new UnauthorizedAccessException("You are not authorized to access this account");
+        }
     }
 }
 

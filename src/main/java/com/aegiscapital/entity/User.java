@@ -32,6 +32,9 @@ public class User {
     @Column(nullable = false)
     private  String password;
 
+    @Column(nullable = false)
+    private String role;   // ROLE_USER or ROLE_ADMIN
+
     // one user can have multiple accounts
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Account> accounts;

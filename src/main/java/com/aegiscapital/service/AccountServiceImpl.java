@@ -8,6 +8,7 @@ import com.aegiscapital.entity.Transaction;
 import com.aegiscapital.exception.AccountNotFoundException;
 import com.aegiscapital.exception.IncorrectPINException;
 import com.aegiscapital.exception.InsufficientBalanceException;
+import com.aegiscapital.exception.UnauthorizedAccessException;
 import com.aegiscapital.respository.AccountRepository;
 import com.aegiscapital.respository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
@@ -42,8 +43,10 @@ public class AccountServiceImpl implements AccountService
         // throws new custom made exception if account not found
         Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new AccountNotFoundException("Account not found"));
+        validateAccountOwnership(account);
         account.setBalance(account.getBalance().add(amount));
         accountRepository.save(account);
+
 
         // deposit transaction details and time are stored directly
         Transaction transaction = Transaction.builder()
@@ -64,11 +67,13 @@ public class AccountServiceImpl implements AccountService
     {
         Account account = accountRepository.findByAccountNumber(request.getAccountNumber())
                 .orElseThrow(() -> new AccountNotFoundException("Account not found"));
+        validateAccountOwnership(account);
         if(account.getBalance().compareTo(request.getAmount()) < 0)
         {
             // throws new custom made exception if there no sufficient balance in account
             throw new InsufficientBalanceException("Insufficient balance");
         }
+
         System.out.println("Enter the Pin: ");
         String pin = sc.next();
         if(!passwordEncoder.matches(pin, account.getPin())){
@@ -98,7 +103,20 @@ public class AccountServiceImpl implements AccountService
        // throws new custom made exception if account not found
         Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new AccountNotFoundException("Account not found"));
-
+        validateAccountOwnership(account);
         return account.getBalance();
+    }
+    private void validateAccountOwnership(Account account) {
+
+        String loggedInEmail = org.springframework.security.core.context.SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        if (account.getUser() == null ||
+                !account.getUser().getEmail().equals(loggedInEmail)) {
+
+            throw new UnauthorizedAccessException("You are not authorized to access this account");
+        }
     }
 }
