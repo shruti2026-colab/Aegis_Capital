@@ -37,5 +37,8 @@ public class Account {
     @Column(nullable = false)
     private String pin;
 
+    @Column(nullable = false)
+    private boolean active = true;
+
 
 }
