@@ -1,10 +1,10 @@
 package com.aegiscapital.service;
 
 
-import com.aegiscapital.dto.LoginAccountIdDTO;
-import com.aegiscapital.dto.RegisterAccountDTO;
-import com.aegiscapital.dto.RegisterRequestDTO;
-import com.aegiscapital.dto.LoginRequestDTO;
+import com.aegiscapital.dto.*;
+import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 public interface AuthService {
     String register(RegisterRequestDTO request);

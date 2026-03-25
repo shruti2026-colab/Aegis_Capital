@@ -1,3 +1,7 @@
-GET
+### Get balance of particular account
 
-###
+GET http://localhost:8080/api/accounts/AGS-E704AF6968/balance
+
+### Get all transactions of paryicular account both "credit" and "debit"
+
+Get http://localhost:8080/api/accounts/account/AGS-E704AF6968

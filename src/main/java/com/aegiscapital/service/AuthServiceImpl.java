@@ -1,10 +1,7 @@
 package com.aegiscapital.service;
 
 import com.aegiscapital.IdGenerator.IdGeneratorImpl;
-import com.aegiscapital.dto.LoginAccountIdDTO;
-import com.aegiscapital.dto.LoginRequestDTO;
-import com.aegiscapital.dto.RegisterAccountDTO;
-import com.aegiscapital.dto.RegisterRequestDTO;
+import com.aegiscapital.dto.*;
 import com.aegiscapital.entity.Account;
 import com.aegiscapital.entity.User;
 import com.aegiscapital.exception.*;
@@ -12,11 +9,13 @@ import com.aegiscapital.respository.AccountRepository;
 import com.aegiscapital.respository.UserRepository;
 import com.aegiscapital.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

@@ -2,13 +2,13 @@ package com.aegiscapital.controller;
 
 
 
-import com.aegiscapital.dto.LoginAccountIdDTO;
-import com.aegiscapital.dto.LoginRequestDTO;
-import com.aegiscapital.dto.RegisterAccountDTO;
-import com.aegiscapital.dto.RegisterRequestDTO;
+import com.aegiscapital.dto.*;
 import com.aegiscapital.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -41,4 +41,6 @@ public class AuthController {
 
         return authService.login(request);
     }
+
+
 }

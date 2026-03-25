@@ -1,23 +1,26 @@
 package com.aegiscapital.service;
 
 import com.aegiscapital.IdGenerator.IdGeneratorImpl;
+import com.aegiscapital.dto.AccountResponseDTO;
 import com.aegiscapital.dto.DepositRequestDTO;
 import com.aegiscapital.dto.WithdrawRequestDTO;
 import com.aegiscapital.entity.Account;
 import com.aegiscapital.entity.Transaction;
-import com.aegiscapital.exception.AccountNotFoundException;
-import com.aegiscapital.exception.IncorrectPINException;
-import com.aegiscapital.exception.InsufficientBalanceException;
-import com.aegiscapital.exception.UnauthorizedAccessException;
+import com.aegiscapital.entity.User;
+import com.aegiscapital.exception.*;
 import com.aegiscapital.respository.AccountRepository;
 import com.aegiscapital.respository.TransactionRepository;
+import com.aegiscapital.respository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 @Service
 public class AccountServiceImpl implements AccountService
@@ -25,12 +28,14 @@ public class AccountServiceImpl implements AccountService
     Scanner sc = new Scanner(System.in);
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
+    private final UserRepository userRepository;
     private final IdGeneratorImpl idGenerator;
     private final PasswordEncoder passwordEncoder;
 
-    public AccountServiceImpl(AccountRepository accountRepository, TransactionRepository transactionRepository, IdGeneratorImpl idGenerator, PasswordEncoder passwordEncoder) {
+    public AccountServiceImpl(AccountRepository accountRepository, TransactionRepository transactionRepository, UserRepository userRepository, IdGeneratorImpl idGenerator, PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
         this.transactionRepository = transactionRepository;
+        this.userRepository = userRepository;
         this.idGenerator = idGenerator;
         this.passwordEncoder = passwordEncoder;
     }
@@ -106,6 +111,9 @@ public class AccountServiceImpl implements AccountService
         validateAccountOwnership(account);
         return account.getBalance();
     }
+
+
+
     private void validateAccountOwnership(Account account) {
 
         String loggedInEmail = org.springframework.security.core.context.SecurityContextHolder
@@ -119,4 +127,35 @@ public class AccountServiceImpl implements AccountService
             throw new UnauthorizedAccessException("You are not authorized to access this account");
         }
     }
+
+
+    @Override
+    public AccountResponseDTO getDetails(String accountNumber) {
+        Account account = accountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
+        AccountResponseDTO details = new AccountResponseDTO(account.getAccountNumber(),account.getBalance(), account.getUser().getUserId(),account.isActive()?"ACTIVE":"INACTIVE");
+        return details;
+    }
+
+    @Override
+    public List<AccountResponseDTO> getAccountsByUserId(String userId) {
+        User user = userRepository.findByUserId(userId);
+        if(user == null){
+            throw new InvalidUserException("User not found");
+        }
+
+        List<Account> accounts = accountRepository.findByUser_UserId(userId);
+
+        List<AccountResponseDTO> details =  accounts.stream()
+                .map(acc -> new AccountResponseDTO(
+                        acc.getAccountNumber(),
+                        acc.getBalance(),
+                        acc.getUser().getUserId(),
+                        acc.isActive() ? "ACTIVE":"INACTIVE"
+                ))
+                .collect(Collectors.toList());
+
+        return details;
+    }
+
 }
