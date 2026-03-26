@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +27,8 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final IdGeneratorImpl idGenerator;
     private final JwtUtil jwtUtil;
+
+    Scanner sc = new Scanner(System.in);
     //  REGISTER USER
     @Override
     public String register(RegisterRequestDTO request) {
@@ -85,7 +88,7 @@ public class AuthServiceImpl implements AuthService {
             throw new IncorrectPasswordException("Invalid password!");
         }
 
-        return "Login successful!";
+        return jwtUtil.generateToken(user.getEmail(),user.getRole());
     }
     @Override
     public String openAccount(RegisterAccountDTO request) {
@@ -109,5 +112,25 @@ public class AuthServiceImpl implements AuthService {
             }
 
 
+    }
+
+    @Override
+    public String resetPassword(ResetPasswordDTO request) {
+        User user = userRepository.findByUserId(request.getUserId());
+        if(user == null){
+            throw new InvalidUserException("User does not exist!\nUser should be registered first to open an account or enter an existing user number");
+        }
+        if(user.getEmail().equals(request.getEmail()) && user.getMobileNumber().equals(request.getMobileNumber())) {
+            Account account = accountRepository.findByAccountNumber(request.getAccountNumber())
+                    .orElseThrow(() -> new InvalidAccountNumberException("Invalid account number!\nnplease Enter valid account number!!!"));
+            System.out.println("Enter new password");
+            String password =  sc.nextLine();
+            user.setPassword(passwordEncoder.encode(password));
+            userRepository.save(user);
+        }
+        else{
+            throw new InvalidUserException("Enter valid Email/Mobile number ");
+        }
+        return "Password reset successfully";
     }
 }

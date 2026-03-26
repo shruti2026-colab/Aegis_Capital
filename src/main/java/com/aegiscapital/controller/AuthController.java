@@ -42,5 +42,10 @@ public class AuthController {
         return authService.login(request);
     }
 
+    @PostMapping("/resetPassword")
+    public String resetPassword(@RequestBody ResetPasswordDTO request){
+        return authService.resetPassword(request);
+    }
+
 
 }

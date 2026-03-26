@@ -20,6 +20,25 @@ public class GlobalExceptionHandler {
                 .body(ex.getMessage());
     }
 
+
+    @ExceptionHandler(ConcurrentTransactionException.class)
+    public ResponseEntity<String> handleBalanceError(ConcurrentTransactionException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(IncorrectPasswordException.class)
+    public ResponseEntity<String> handleBalanceError(IncorrectPasswordException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(IncorrectPINException.class)
+    public ResponseEntity<String> handleBalanceError(IncorrectPINException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ex.getMessage());
+    }
+
     //exception to handle situation when balance < amount
     @ExceptionHandler(InsufficientBalanceException.class)
     public ResponseEntity<String> handleBalanceError(InsufficientBalanceException ex){
@@ -27,8 +46,36 @@ public class GlobalExceptionHandler {
                 .body(ex.getMessage());
     }
 
+    //exception to handle situation when balance < amount
+    @ExceptionHandler(InvalidAccountNumberException.class)
+    public ResponseEntity<String> handleBalanceError(InvalidAccountNumberException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ex.getMessage());
+    }
 
-        @ExceptionHandler(UnauthorizedAccessException.class)
+    //exception to handle situation when balance < amount
+    @ExceptionHandler(InvalidUserException.class)
+    public ResponseEntity<String> handleBalanceError(InvalidUserException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ex.getMessage());
+    }
+
+    //exception to handle situation when balance < amount
+    @ExceptionHandler(NegativeNumberException.class)
+    public ResponseEntity<String> handleBalanceError(NegativeNumberException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ex.getMessage());
+    }
+
+    //exception to handle situation when balance < amount
+    @ExceptionHandler(SimilarEmailException.class)
+    public ResponseEntity<String> handleBalanceError(SimilarEmailException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ex.getMessage());
+    }
+
+
+    @ExceptionHandler(UnauthorizedAccessException.class)
         @ResponseStatus(HttpStatus.FORBIDDEN)
         public String handleUnauthorizedAccess(UnauthorizedAccessException ex) {
             return ex.getMessage();
