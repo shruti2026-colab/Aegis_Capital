@@ -3,6 +3,7 @@ package com.aegiscapital.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -38,4 +39,8 @@ public class User {
     // one user can have multiple accounts
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Account> accounts;
+
+    private String token;
+
+    private LocalDateTime tokenExpiry;
 }

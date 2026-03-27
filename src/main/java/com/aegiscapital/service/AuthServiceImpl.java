@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -56,6 +57,10 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElse(null);
 
+        if(user.getToken() != null && user.getTokenExpiry()!=null && user.getTokenExpiry().isAfter(LocalDateTime.now())){
+            throw new UserAlreadyLoggedInException("User already logged in");
+        }
+
         if (user == null) {
             throw new InvalidUserException("User does not exist!\nUser should be registered first or enter an existing user email");
         }
@@ -64,7 +69,13 @@ public class AuthServiceImpl implements AuthService {
             throw new IncorrectPasswordException("Invalid password!");
         }
 
-        return jwtUtil.generateToken(user.getEmail(),user.getRole());
+        String token = jwtUtil.generateToken(user.getEmail(),user.getRole());
+
+        user.setToken(token);
+        user.setTokenExpiry(LocalDateTime.now().plusHours(1));
+        userRepository.save(user);
+
+        return token;
     }
 
     // LOGIN USING ACCOUNT ID
@@ -79,7 +90,9 @@ public class AuthServiceImpl implements AuthService {
         }
 
         User user = acc.getUser();
-
+        if(user.getToken() != null && user.getTokenExpiry()!=null && user.getTokenExpiry().isAfter(LocalDateTime.now())){
+            throw new UserAlreadyLoggedInException("User already logged in");
+        }
         if (user == null) {
             throw new InvalidUserException("User does not exist!\nUser should be registered first or enter an existing user number");
         }
@@ -88,13 +101,20 @@ public class AuthServiceImpl implements AuthService {
             throw new IncorrectPasswordException("Invalid password!");
         }
 
-        return jwtUtil.generateToken(user.getEmail(),user.getRole());
+        String token = jwtUtil.generateToken(user.getEmail(),user.getRole());
+
+        user.setToken(token);
+        user.setTokenExpiry(LocalDateTime.now().plusHours(1));
+        userRepository.save(user);
+
+        return token;
     }
 
 
     @Override
     public String resetPassword(ResetPasswordDTO request) {
         User user = userRepository.findByUserId(request.getUserId());
+
         if(user == null){
             throw new InvalidUserException("User does not exist!\nUser should be registered first to open an account or enter an existing user number");
         }
