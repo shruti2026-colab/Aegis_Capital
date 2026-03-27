@@ -23,11 +23,6 @@ public class AuthController {
         return authService.register(request);
     }
 
-    //only existing users can open account
-    @PostMapping("/openAccount")
-    public String openAccount(@RequestBody RegisterAccountDTO request){
-        return authService.openAccount(request);
-    }
 
     // user can login using email and password
     @PostMapping("/login")
@@ -46,6 +41,5 @@ public class AuthController {
     public String resetPassword(@RequestBody ResetPasswordDTO request){
         return authService.resetPassword(request);
     }
-
 
 }

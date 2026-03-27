@@ -3,6 +3,7 @@ package com.aegiscapital.service;
 import com.aegiscapital.IdGenerator.IdGeneratorImpl;
 import com.aegiscapital.dto.AccountResponseDTO;
 import com.aegiscapital.dto.DepositRequestDTO;
+import com.aegiscapital.dto.RegisterAccountDTO;
 import com.aegiscapital.dto.WithdrawRequestDTO;
 import com.aegiscapital.entity.Account;
 import com.aegiscapital.entity.Transaction;
@@ -112,7 +113,29 @@ public class AccountServiceImpl implements AccountService
         return account.getBalance();
     }
 
+    @Override
+    public String openAccount(RegisterAccountDTO request) {
 
+        if (request.getAmount().compareTo(BigDecimal.ZERO) < 0) {
+            throw new NegativeNumberException("Amount cannot be negative");
+        }
+
+        User user = userRepository.findByUserId(request.getUserId());
+        if(user != null) {
+            Account account = new Account();
+            account.setUser(user);
+            account.setBalance(request.getAmount());
+            account.setAccountNumber(idGenerator.generateAccountNumber());
+            account.setPin(passwordEncoder.encode(request.getPin()));
+            accountRepository.save(account);
+            return "Account created successfully!!";
+        }
+        else{
+            throw new InvalidUserException("User does not exist!\nUser should be registered first to open an account or enter an existing user number");
+        }
+
+
+    }
 
     private void validateAccountOwnership(Account account) {
 

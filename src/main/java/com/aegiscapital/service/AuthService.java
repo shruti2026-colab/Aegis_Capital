@@ -11,7 +11,5 @@ public interface AuthService {
     String login(LoginRequestDTO request);
     String login(LoginAccountIdDTO request);
 
-    String openAccount(RegisterAccountDTO request);
-
     String resetPassword(ResetPasswordDTO request);
 }

@@ -90,29 +90,7 @@ public class AuthServiceImpl implements AuthService {
 
         return jwtUtil.generateToken(user.getEmail(),user.getRole());
     }
-    @Override
-    public String openAccount(RegisterAccountDTO request) {
 
-        if (request.getAmount().compareTo(BigDecimal.ZERO) < 0) {
-            throw new NegativeNumberException("Amount cannot be negative");
-        }
-
-        User user = userRepository.findByUserId(request.getUserId());
-            if(user != null) {
-                Account account = new Account();
-                account.setUser(user);
-                account.setBalance(request.getAmount());
-                account.setAccountNumber(idGenerator.generateAccountNumber());
-                account.setPin(passwordEncoder.encode(request.getPin()));
-                accountRepository.save(account);
-                return "Account created successfully!!";
-            }
-            else{
-                throw new InvalidUserException("User does not exist!\nUser should be registered first to open an account or enter an existing user number");
-            }
-
-
-    }
 
     @Override
     public String resetPassword(ResetPasswordDTO request) {
