@@ -23,16 +23,9 @@ public class Account {
     @Column(nullable = false)
     private BigDecimal balance;  // to store amount in account, check balance
 
-
     // optimistic locking to prevent concurrent update issues
     @Version
     private Long version;
-
-
-    // if may be more than one account belong to one user
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
 
     @Column(nullable = false)
     private String pin;
@@ -40,5 +33,9 @@ public class Account {
     @Column(nullable = false)
     private boolean active = true;
 
-
+    // if may be more than one account belong to one user
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+    
 }

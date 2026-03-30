@@ -37,6 +37,15 @@ public class AuthController {
         return authService.login(request);
     }
 
+    //user can logout
+    @GetMapping("/{userId}/logout")
+    public String logout(@PathVariable String userId)
+    {
+        return authService.logout(userId);
+    }
+
+
+    // user can reset password
     @PostMapping("/resetPassword")
     public String resetPassword(@RequestBody ResetPasswordDTO request){
         return authService.resetPassword(request);
