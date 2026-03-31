@@ -123,15 +123,15 @@ public class AuthServiceImpl implements AuthService {
         {
             throw new UserNotLoggedInException("User not logged in!!");
         }
-        if(user.getToken() != null && user.getTokenExpiry().isAfter(LocalDateTime.now()))
+        else
         {
             //while logout token will be deleted from db
             user.setToken(null);
             // storing localtime when user logged out
             user.setTokenExpiry(LocalDateTime.now());
             userRepository.save(user);
+            return "logout successfully";
         }
-        return "logout successfully";
     }
 
     // Reset password if user forgets his password

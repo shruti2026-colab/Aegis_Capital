@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -42,6 +43,7 @@ public class AccountServiceImpl implements AccountService
     }
 
     @Override
+    @Transactional
     public void deposit(DepositRequestDTO request)
     {
         String accountNumber = request.getAccountNumber();
@@ -69,6 +71,7 @@ public class AccountServiceImpl implements AccountService
     }
 
     @Override
+    @Transactional
     public void withdraw(WithdrawRequestDTO request)
     {
         Account account = accountRepository.findByAccountNumber(request.getAccountNumber())
