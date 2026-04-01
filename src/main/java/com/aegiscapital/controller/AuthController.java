@@ -20,6 +20,7 @@ public class AuthController {
     // To register a new user
     @PostMapping("/register")
     public String register(@RequestBody RegisterRequestDTO request) {
+
         return authService.register(request);
     }
 
