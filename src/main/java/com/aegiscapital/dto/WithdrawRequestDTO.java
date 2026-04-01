@@ -9,5 +9,6 @@ public class WithdrawRequestDTO {
 
     private String accountNumber;
     private BigDecimal amount;
+    private String pin;
 
 }
