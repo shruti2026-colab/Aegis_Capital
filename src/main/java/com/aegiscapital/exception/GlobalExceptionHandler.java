@@ -88,4 +88,9 @@ public class GlobalExceptionHandler {
         return ex.getMessage();
     }
 
+    @ExceptionHandler(UserNotLoggedInException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public String handleUnauthorizedAccess(UserNotLoggedInException ex) {
+        return ex.getMessage();
+    }
 }

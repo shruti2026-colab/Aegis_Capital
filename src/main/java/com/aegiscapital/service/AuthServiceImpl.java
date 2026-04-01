@@ -110,7 +110,31 @@ public class AuthServiceImpl implements AuthService {
         return token;
     }
 
+    // user can logout in one hour of logib since after one hour logout dones automatically
+    @Override
+    public String logout(String userId)
+    {
+        User user = userRepository.findByUserId(userId);
+        if(user == null)
+        {
+            throw new InvalidUserException("User does not exist!\nPlease enter valid userId");
+        }
+        if(user.getToken() == null || (user.getToken()!=null && user.getTokenExpiry().isBefore(LocalDateTime.now())))
+        {
+            throw new UserNotLoggedInException("User not logged in!!");
+        }
+        else
+        {
+            //while logout token will be deleted from db
+            user.setToken(null);
+            // storing localtime when user logged out
+            user.setTokenExpiry(LocalDateTime.now());
+            userRepository.save(user);
+            return "logout successfully";
+        }
+    }
 
+    // Reset password if user forgets his password
     @Override
     public String resetPassword(ResetPasswordDTO request) {
         User user = userRepository.findByUserId(request.getUserId());
