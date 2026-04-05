@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class TransactionResponseDTO {
 
-    private Long transactionId;
+    private String transactionId;
     private String fromAccountNumber;
     private String toAccountNumber;
     private BigDecimal amount;

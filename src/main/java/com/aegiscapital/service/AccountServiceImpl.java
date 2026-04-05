@@ -81,9 +81,8 @@ public class AccountServiceImpl implements AccountService
             throw new InsufficientBalanceException("Insufficient balance");
         }
 
-        System.out.println("Enter the Pin: ");
-        String pin = sc.next();
-        if(!passwordEncoder.matches(pin, account.getPin())){
+
+        if(!passwordEncoder.matches(request.getPin(), account.getPin())){
             throw new IncorrectPINException("Enter the right pin");
         }
         account.setBalance(account.getBalance().subtract(request.getAmount()));

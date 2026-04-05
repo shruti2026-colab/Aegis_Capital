@@ -101,7 +101,7 @@ public class TransactionServiceImpl implements TransactionService
                 ? "DEBIT" : "CREDIT";
 
         return TransactionResponseDTO.builder()
-                .transactionId(t.getId())
+                .transactionId(t.getTransactionId())
                 .fromAccountNumber(t.getFromAccount() != null ? t.getFromAccount().getAccountNumber() : null)
                 .toAccountNumber(t.getToAccount() != null ? t.getToAccount().getAccountNumber() : null)
                 .amount(t.getAmount())
