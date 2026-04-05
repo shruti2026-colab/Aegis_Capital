@@ -1,4 +1,4 @@
-package com.aegiscapital.respository;
+package com.aegiscapital.repository;
 
 import com.aegiscapital.entity.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -5,19 +5,15 @@ import com.aegiscapital.dto.*;
 import com.aegiscapital.entity.Account;
 import com.aegiscapital.entity.User;
 import com.aegiscapital.exception.*;
-import com.aegiscapital.respository.AccountRepository;
-import com.aegiscapital.respository.UserRepository;
+import com.aegiscapital.repository.AccountRepository;
+import com.aegiscapital.repository.UserRepository;
 import com.aegiscapital.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

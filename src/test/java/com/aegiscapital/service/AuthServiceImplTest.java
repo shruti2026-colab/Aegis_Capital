@@ -4,8 +4,8 @@ import com.aegiscapital.IdGenerator.IdGeneratorImpl;
 import com.aegiscapital.dto.LoginRequestDTO;
 import com.aegiscapital.dto.RegisterRequestDTO;
 import com.aegiscapital.entity.User;
-import com.aegiscapital.respository.AccountRepository;
-import com.aegiscapital.respository.UserRepository;
+import com.aegiscapital.repository.AccountRepository;
+import com.aegiscapital.repository.UserRepository;
 import com.aegiscapital.security.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;

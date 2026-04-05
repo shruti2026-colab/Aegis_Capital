@@ -2,7 +2,7 @@ package com.aegiscapital.security;
 
 import com.aegiscapital.entity.User;
 import com.aegiscapital.exception.UserAlreadyLoggedInException;
-import com.aegiscapital.respository.UserRepository;
+import com.aegiscapital.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,9 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
