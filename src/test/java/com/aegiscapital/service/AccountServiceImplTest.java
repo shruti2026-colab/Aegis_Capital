@@ -1,13 +1,12 @@
-package com.aegiscapital.account;
+package com.aegiscapital.service;
 
 import com.aegiscapital.IdGenerator.IdGeneratorImpl;
 import com.aegiscapital.dto.*;
 import com.aegiscapital.entity.Account;
 import com.aegiscapital.entity.User;
-import com.aegiscapital.respository.AccountRepository;
-import com.aegiscapital.respository.TransactionRepository;
-import com.aegiscapital.respository.UserRepository;
-import com.aegiscapital.service.AccountServiceImpl;
+import com.aegiscapital.repository.AccountRepository;
+import com.aegiscapital.repository.TransactionRepository;
+import com.aegiscapital.repository.UserRepository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

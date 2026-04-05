@@ -1,4 +1,4 @@
-package com.aegiscapital.idGeneratorTest;
+package com.aegiscapital.service;
 
 import com.aegiscapital.IdGenerator.IdGeneratorImpl;
 import org.junit.jupiter.api.Test;

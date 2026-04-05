@@ -1,12 +1,11 @@
-package com.aegiscapital.transaction;
+package com.aegiscapital.service;
 
 import com.aegiscapital.dto.TransactionResponseDTO;
 import com.aegiscapital.entity.Transaction;
 import com.aegiscapital.entity.Account;
 import com.aegiscapital.entity.User;
-import com.aegiscapital.respository.AccountRepository;
-import com.aegiscapital.respository.TransactionRepository;
-import com.aegiscapital.service.TransactionServiceImpl;
+import com.aegiscapital.repository.AccountRepository;
+import com.aegiscapital.repository.TransactionRepository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class) // Enables Mockito support
-public class TransactionServiceTest {
+public class TransactionServiceImplTest {
 
     // Mocking dependencies (no real DB calls)
     @Mock
