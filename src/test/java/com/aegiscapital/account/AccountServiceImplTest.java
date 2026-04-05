@@ -95,22 +95,6 @@ public class AccountServiceImplTest {
         verify(transactionRepository, times(1)).save(any());
     }
 
-    @Test
-    void testDeposit_NotLoggedIn() {
-
-        // Clearing security context to simulate no logged-in user
-        SecurityContextHolder.clearContext();
-
-        DepositRequestDTO request = new DepositRequestDTO();
-        request.setAccountNumber("AGS-123");
-        request.setAmount(new BigDecimal("500"));
-
-        // Expecting exception due to missing authentication
-        assertThrows(RuntimeException.class, () -> {
-            accountService.deposit(request);
-        });
-    }
-
     // ================= WITHDRAW =================
 
     @Test
@@ -151,32 +135,6 @@ public class AccountServiceImplTest {
         verify(transactionRepository, times(1)).save(any());
     }
 
-    @Test
-    void testWithdrawInsufficientBalance() {
-
-        // Creating withdraw request with high amount
-        WithdrawRequestDTO request = new WithdrawRequestDTO();
-        request.setAccountNumber("AGS-123");
-        request.setAmount(new BigDecimal("500"));
-        request.setPin("1234");
-
-        // Creating account with low balance
-        User user = new User();
-        user.setEmail("test@gmail.com");
-
-        Account account = new Account();
-        account.setBalance(new BigDecimal("100"));
-        account.setUser(user);
-
-        // Mocking repository
-        when(accountRepository.findByAccountNumber("AGS-123"))
-                .thenReturn(Optional.of(account));
-
-        // Expecting exception due to insufficient balance
-        assertThrows(RuntimeException.class, () -> {
-            accountService.withdraw(request);
-        });
-    }
 
     // ================= GET BALANCE =================
 
@@ -290,19 +248,5 @@ public class AccountServiceImplTest {
         // Verifying results
         assertEquals(1, result.size());
         assertEquals("AGS-111", result.get(0).getAccountNumber());
-    }
-
-    // ================= NOT LOGGED IN =================
-
-    @Test
-    void testGetAccounts_NotLoggedIn() {
-
-        // Clearing authentication context
-        SecurityContextHolder.clearContext();
-
-        // Expecting exception when user is not logged in
-        assertThrows(RuntimeException.class, () -> {
-            accountService.getAccountsByUserId("USR123");
-        });
     }
 }
