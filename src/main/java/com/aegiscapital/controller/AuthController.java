@@ -19,37 +19,73 @@ public class AuthController {
 
     // To register a new user
     @PostMapping("/register")
-    public String register(@RequestBody RegisterRequestDTO request) {
+    public ResponseEntity<SuccessResponseDTO> register(@RequestBody RegisterRequestDTO request) {
 
-        return authService.register(request);
+         authService.register(request);
+
+        SuccessResponseDTO<Void> response = new SuccessResponseDTO<>(
+                200,
+                "User Registered Successfully",
+                null
+        );
+        return ResponseEntity.ok(response);
     }
 
 
     // user can login using email and password
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequestDTO request) {
-        return authService.login(request);
+    public ResponseEntity<SuccessResponseDTO<String>> login(@RequestBody LoginRequestDTO request) {
+        String token = authService.login(request);
+
+        SuccessResponseDTO<String> response = new SuccessResponseDTO<>(
+                200,
+                "Login Successful",
+                token
+
+        );
+        return ResponseEntity.ok(response);
     }
 
     // user can login using accountId and password
     @PostMapping("/loginUsingAccountId")
-    public String loginUsingAccountId(@RequestBody LoginAccountIdDTO request){
+    public ResponseEntity<SuccessResponseDTO<String>> loginUsingAccountId(@RequestBody LoginAccountIdDTO request){
 
-        return authService.login(request);
+        String token = authService.login(request);
+
+        SuccessResponseDTO<String> response = new SuccessResponseDTO<>(
+                200,
+                "Login Successful",
+                token
+        );
+        return ResponseEntity.ok(response);
     }
 
     //user can logout
     @GetMapping("/{userId}/logout")
-    public String logout(@PathVariable String userId)
+    public ResponseEntity<SuccessResponseDTO> logout(@PathVariable String userId)
     {
-        return authService.logout(userId);
+         authService.logout(userId);
+
+        SuccessResponseDTO<Void> response = new SuccessResponseDTO<>(
+                200,
+                "Logout Successful",
+                null
+        );
+        return ResponseEntity.ok(response);
     }
 
 
     // user can reset password
     @PostMapping("/resetPassword")
-    public String resetPassword(@RequestBody ResetPasswordDTO request){
-        return authService.resetPassword(request);
+    public ResponseEntity<SuccessResponseDTO<Void>> resetPassword(@RequestBody ResetPasswordDTO request){
+         authService.resetPassword(request);
+
+        SuccessResponseDTO<Void> response = new SuccessResponseDTO<>(
+                200,
+                "Password reset Successful",
+                null
+        );
+        return ResponseEntity.ok(response);
     }
 
 }

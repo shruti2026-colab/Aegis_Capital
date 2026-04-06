@@ -1,6 +1,7 @@
 package com.aegiscapital.controller;
 
 import com.aegiscapital.dto.AccountAdminDTO;
+import com.aegiscapital.dto.SuccessResponseDTO;
 import com.aegiscapital.dto.TransactionAdminDTO;
 import com.aegiscapital.dto.UserResponseDTO;
 import com.aegiscapital.entity.Account;
@@ -8,6 +9,7 @@ import com.aegiscapital.entity.Transaction;
 import com.aegiscapital.entity.User;
 import com.aegiscapital.service.AdminService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,15 +42,26 @@ public class AdminController {
 
     // 4. Deactivate account
     @DeleteMapping("/account/{accountNumber}")
-    public String deleteAccount(@PathVariable String accountNumber) {
+    public ResponseEntity<SuccessResponseDTO<Void>> deleteAccount(@PathVariable String accountNumber) {
         adminService.deleteAccount(accountNumber);
-        return "Account deactivated successfully";
+
+        SuccessResponseDTO<Void> response = new SuccessResponseDTO<>(
+                200,
+                "Account Deactivated Successful",
+                null
+        );
+        return ResponseEntity.ok(response);
     }
 
     // 5. Promote user to admin
     @PutMapping("/promote/{email}")
-    public String promoteUser(@PathVariable String email) {
+    public ResponseEntity<SuccessResponseDTO<Void>> promoteUser(@PathVariable String email) {
         adminService.promoteToAdmin(email);
-        return "User promoted to ADMIN";
+        SuccessResponseDTO<Void> response = new SuccessResponseDTO<>(
+                200,
+                "User promoted to ADMIN",
+                null
+        );
+        return ResponseEntity.ok(response);
     }
 }

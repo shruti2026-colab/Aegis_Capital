@@ -1,9 +1,6 @@
 package com.aegiscapital.controller;
 
-import com.aegiscapital.dto.AccountResponseDTO;
-import com.aegiscapital.dto.DepositRequestDTO;
-import com.aegiscapital.dto.RegisterAccountDTO;
-import com.aegiscapital.dto.WithdrawRequestDTO;
+import com.aegiscapital.dto.*;
 import com.aegiscapital.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,30 +18,52 @@ public class AccountController {
 
     //deposit api with account id and amount as input
     @PostMapping("/deposit")
-    public String deposit(@RequestBody DepositRequestDTO request) {
+    public ResponseEntity<SuccessResponseDTO<Void>> deposit(@RequestBody DepositRequestDTO request) {
 
         accountService.deposit(request);
-        return "Deposit successful";
+        SuccessResponseDTO<Void> response = new SuccessResponseDTO<>(
+                200,
+                "Deposit Successful",
+                null
+        );
+        return ResponseEntity.ok(response);
     }
 
     //withdraw api with account id, password and amount as input
     @PostMapping("/withdraw")
-    public String withdraw(@RequestBody WithdrawRequestDTO request) {
-
+    public ResponseEntity<SuccessResponseDTO<Void>> withdraw(@RequestBody WithdrawRequestDTO request) {
         accountService.withdraw(request);
-        return "Withdraw successful";
+        SuccessResponseDTO<Void> response = new SuccessResponseDTO<>(
+                200,
+                "Withdraw Successful",
+                null
+        );
+        return ResponseEntity.ok(response);
     }
 
     //get balance api with account id as input
     @GetMapping("/{accountNumber}/balance")
-    public BigDecimal getBalance(@PathVariable String accountNumber) {
-        return accountService.getBalance(accountNumber);
+    public ResponseEntity<SuccessResponseDTO<BigDecimal>> getBalance(@PathVariable String accountNumber) {
+        BigDecimal balance = accountService.getBalance(accountNumber);
+
+        SuccessResponseDTO<BigDecimal> response = new SuccessResponseDTO<>(
+                200,
+                "Balance fetched successfully",
+                balance
+        );
+        return ResponseEntity.ok(response);
     }
 
     //only existing users can open account
     @PostMapping("/openAccount")
-    public String openAccount(@RequestBody RegisterAccountDTO request){
-        return accountService.openAccount(request);
+    public ResponseEntity<SuccessResponseDTO<Void>> openAccount(@RequestBody RegisterAccountDTO request){
+        accountService.openAccount(request);
+        SuccessResponseDTO<Void> response = new SuccessResponseDTO<>(
+                200,
+                "account opened Successful",
+                null
+        );
+        return ResponseEntity.ok(response);
     }
     
     // get complete account details

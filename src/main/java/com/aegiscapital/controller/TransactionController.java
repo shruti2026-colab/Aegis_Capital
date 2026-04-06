@@ -1,5 +1,6 @@
 package com.aegiscapital.controller;
 
+import com.aegiscapital.dto.SuccessResponseDTO;
 import com.aegiscapital.dto.TransactionResponseDTO;
 import com.aegiscapital.dto.TransferRequestDTO;
 import com.aegiscapital.entity.Transaction;
@@ -19,9 +20,15 @@ public class TransactionController {
 
     //transfer api using account number of both the user
     @PostMapping("/transfer")
-    public ResponseEntity<String> transferFunds(@RequestBody TransferRequestDTO request){
+    public ResponseEntity<SuccessResponseDTO<Void>> transferFunds(@RequestBody TransferRequestDTO request){
         transactionService.transferFunds(request);
-        return ResponseEntity.ok("Funds transferred successfully");
+
+        SuccessResponseDTO<Void> response = new SuccessResponseDTO<>(
+                200,
+                "Funds Transfer Successful",
+                null
+        );
+        return ResponseEntity.ok(response);
     }
 
     //get history of all the transaction

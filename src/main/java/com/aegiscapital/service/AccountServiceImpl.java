@@ -49,6 +49,9 @@ public class AccountServiceImpl implements AccountService
         // throws new custom made exception if account not found
         Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new AccountNotFoundException("Account not found"));
+        if (request.getAmount().compareTo(BigDecimal.ZERO) < 0) {
+            throw new NegativeNumberException("Amount cannot be negative");
+        }
         validateAccountOwnership(account);
         account.setBalance(account.getBalance().add(amount));
         accountRepository.save(account);
@@ -56,8 +59,8 @@ public class AccountServiceImpl implements AccountService
 
         // deposit transaction details and time are stored directly
         Transaction transaction = Transaction.builder()
-                .fromAccount(account) // sender accountid is stored
-                .toAccount(null) //since deposit done for self account, toAccount will be null
+                .fromAccount(null) // sender accountid is null since user transfering money to himself
+                .toAccount(account) //since deposit done for self account, toAccount will be his account number
                 .amount(amount)
                 .status("Deposit SUCCESS")
                 .timestamp(LocalDateTime.now())
@@ -75,6 +78,10 @@ public class AccountServiceImpl implements AccountService
         Account account = accountRepository.findByAccountNumber(request.getAccountNumber())
                 .orElseThrow(() -> new AccountNotFoundException("Account not found"));
         validateAccountOwnership(account);
+        if (request.getAmount().compareTo(BigDecimal.ZERO) < 0) {
+            throw new NegativeNumberException("Amount cannot be negative");
+        }
+
         if(account.getBalance().compareTo(request.getAmount()) < 0)
         {
             // throws new custom made exception if there no sufficient balance in account
